@@ -1,0 +1,9 @@
+2019-11-12 14:50:32.308 [Windengine: 002] INFO - Windengine sending Data='Windegine Info: ID = 002, timestamp = 2019-11-12 14:50:32, windspeed = 3,860000'
+SUCCESS - Message wurde gesendet. [2019-11-12 14:50:32.308]
+
+2019-11-12 14:50:36.523 [Windengine: 002] INFO - Windengine sending Data='Windegine Info: ID = 002, timestamp = 2019-11-12 14:50:36, windspeed = 31,610000'
+SUCCESS - Message wurde gesendet. [2019-11-12 14:50:36.523]
+
+2019-11-12 14:50:40.739 [Windengine: 002] INFO - Windengine sending Data='Windegine Info: ID = 002, timestamp = 2019-11-12 14:50:40, windspeed = 59,120000'
+SUCCESS - Message wurde gesendet. [2019-11-12 14:50:40.739]
+

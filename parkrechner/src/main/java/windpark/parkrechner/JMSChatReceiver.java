@@ -19,8 +19,10 @@ public class JMSChatReceiver implements MessageListener {
   private Parkrechner zentral;
   private Session session = null;
   private Connection connection = null;
-  private MessageConsumer consumer = null;
-  private Destination destination = null;
+	private MessageProducer producer = null;
+	private MessageConsumer consumer = null;
+	private Destination dest1 = null;
+	private Destination dest2 = null;
 
 	public String getMessage() {
 		return message;
@@ -43,11 +45,19 @@ public class JMSChatReceiver implements MessageListener {
 		
 			// Create the session
 			session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-			destination = session.createQueue( subject );
+			dest1 = session.createQueue( subject );
+			  dest2 = session.createQueue( subject+"check");
+			  //System.out.println(((Queue) dest1).getQueueName());
+			  //System.out.println(((Queue) dest2).getQueueName());
 				  
 			// Create the consumer
-			consumer = session.createConsumer( destination );
+			consumer = session.createConsumer( dest1 );
 		  	consumer.setMessageListener(this);
+
+		  // Create the producer.
+		  producer = session.createProducer(dest2);
+		  producer.setDeliveryMode( DeliveryMode.NON_PERSISTENT );
+		  System.out.println("--Übertragung gestartet--");
 	  } catch (Exception e) {
 			System.out.println("[MessageConsumer] Caught: " + e);
 		  System.out.println("Hier3");
@@ -61,6 +71,7 @@ public class JMSChatReceiver implements MessageListener {
 
 	public void end() {
 		try { consumer.close(); } catch ( Exception e ) {}
+		try { producer.close(); } catch ( Exception e ) {}
 		try { session.close(); } catch ( Exception e ) {}
 		try { connection.close(); } catch ( Exception e ) {}
 		try {
@@ -82,6 +93,18 @@ public class JMSChatReceiver implements MessageListener {
 			System.out.println("Message received: " + stamp );
 			this.zentral.empfangen(this.message);
 			message.acknowledge();
+			TextMessage m1 = null;
+			try {
+				//System.out.println(this.message);
+				//System.out.println(producer);
+				m1 = session.createTextMessage(this.message);
+				//System.out.println(m1);
+				producer.send(m1);
+				System.out.println("Bestätigung versendet");
+				//System.out.println("Bestätigung nicht versendet");
+			} catch (JMSException e) {
+				e.printStackTrace();
+			}
 		} catch (Exception e) {
 			System.out.println("Hier1");
 			e.printStackTrace();

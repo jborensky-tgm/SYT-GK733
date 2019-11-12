@@ -1,7 +1,12 @@
 import model.WindengineData;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import windengine.WindengineSimulation;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -13,7 +18,7 @@ public class Windkraftanlage {
 
     public Windkraftanlage(String id) {
         this.id = id;
-        this.sender = new JMSChatSender(this.id);
+        this.sender = new JMSChatSender(this,this.id);
     }
 
     public void senden() {
@@ -54,6 +59,37 @@ public class Windkraftanlage {
         obj.put("unitBladeposition", uBp);
 
         return obj;
+    }
+
+    public void log(String json, boolean ok) {
+        String s = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date());
+        File file = new File(String.format("windkraftanlage-ID%s.log",this.id));
+        String info = null;
+        JSONParser p = new JSONParser();
+        JSONObject jobject = null;
+        try {
+            jobject = (JSONObject) p.parse(json);
+            info = String.format("%s [Windengine: %s] INFO - Windengine sending Data='Windegine Info: ID = %s, timestamp = %s, windspeed = %f'", s, this.id, jobject.get("windegineID"), jobject.get("timestamp"), jobject.get("windspeed"));
+        } catch (ParseException e) {
+            System.out.println("Die Syntax des gesendeten String ist nicht valide.");
+            e.printStackTrace();
+        }
+        if (ok) {
+            info += String.format("\r\nSUCCESS - Message wurde gesendet. [%s]", s);
+        } else {
+            info += String.format("\r\nFAILED - Message wurde nicht gesendet. [%s]", s);
+        }
+
+        FileWriter fr = null;
+        try {
+            fr = new FileWriter(file, true);
+            fr.write(info);
+            fr.write("\r\n");
+            fr.write("\r\n");
+            fr.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void terminate() {

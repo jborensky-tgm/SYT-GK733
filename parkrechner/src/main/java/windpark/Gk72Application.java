@@ -12,9 +12,9 @@ import static org.springframework.boot.SpringApplication.run;
 public class Gk72Application {
 	public static void main(String[] args) {
 		run(Gk72Application.class, args);
-		LinkedList<String> we = new LinkedList<>();
+		/*LinkedList<String> we = new LinkedList<>();
 		we.add("001");
 		we.add("002");
-		Parkrechner p1 = new Parkrechner(we);
+		Parkrechner p1 = new Parkrechner(we);*/
 	}
 }
